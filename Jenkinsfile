@@ -6,7 +6,6 @@ pipeline {
                                 git branch: 'main', url: 'https://github.com/sanjayjangir1093/java-app.git'
                                 }
                         }
-}
                  stage ("build the code") {
                           step{
                                sh 'sudo mvn dependency:purge-local-repository'
@@ -18,8 +17,9 @@ pipeline {
                           step {
                                 sh 'docker build -t java-app:$BUILD-TAG .'
                           }
-                
                  }
+        }  
+             }
 ~
 ~
 ~
