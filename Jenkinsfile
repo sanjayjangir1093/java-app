@@ -18,6 +18,7 @@ pipeline {
                           step {
                                 sh 'docker build -t java-app:$BUILD-TAG .'
                           }
+                
                  }
 ~
 ~
