@@ -8,14 +8,17 @@ pipeline {
                         }
                  stage ("build the code") {
                           steps{
-                               sh 'sudo -S mvn dependency:purge-local-repository'
-                               sh 'sudo -S mvn clean package'
+                               sh
+                                  'sudo -S mvn dependency:purge-local-repository'
+                               sh 
+                                  'sudo -S mvn clean package'
                           }
                  }
 
                  stage ("building docker image") {
                           steps {
-                                sh 'sudo -S docker build -t java-app:$BUILD-TAG .'
+                                sh
+                                  'sudo -S docker build -t java-app:$BUILD-TAG .'
                           }
                  }
         }  
