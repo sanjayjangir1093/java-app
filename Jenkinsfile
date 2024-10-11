@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'sanjay'
+        label 'jenkins-salve'
     }
     environment {
         MY_VAR = 'Hello, World!'
