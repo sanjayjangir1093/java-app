@@ -8,8 +8,8 @@ pipeline {
                         }
                  stage ("build the code") {
                           steps{
-                               bat 'sudo  mvn dependency:purge-local-repository'   
-                               bat 'sudo mvn clean package'
+                               bat 'mvn dependency:purge-local-repository'   
+                               bat 'mvn clean package'
                           }
                  }
 
