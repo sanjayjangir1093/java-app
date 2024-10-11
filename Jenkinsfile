@@ -1,26 +1,47 @@
 pipeline {
-        agent {
-        label 'jenkins-salve'
+    agent {
+        label 'sanjay'
+    }
+    environment {
+        MY_VAR = 'Hello, World!'
+    }
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                sh 'mkdir build'
+                sh 'cp src/* build/'
+            }
         }
-        stages {
-                 stage ("pull code from git repo") {
-                          steps {
-                                git branch: 'main', url: 'https://github.com/sanjayjangir1093/java-app.git'
-                                }
-                        }
-
-                 stage ("build the code") {
-                          steps{
-                               sh 'mvn dependency:purge-local-repository'   
-                               sh 'mvn clean package'
-                          }
-                 }
-
-                 stage ("building docker image") {
-                          steps {
-                                sh 'docker build -t java-app:$BUILD_TAG .'
-                          }
-                 }
-        }  
- }
-
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                sh 'java -jar test.jar'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                sh 'ssh deploy@remote-server "mkdir -p /opt/deploy"'
+                sh 'scp build/* deploy@remote-server:/opt/deploy/'
+            }
+        }
+        stage('Cleanup') {
+            steps {
+                echo 'Cleaning up...'
+                sh 'rm -rf build'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline finished'
+        }
+        success {
+            echo 'Pipeline succeeded'
+        }
+        failure {
+            echo 'Pipeline failed'
+        }
+    }
+}
