@@ -1,5 +1,7 @@
 pipeline {
-	agent any
+	agent {
+	    label 'jenki'
+	}
 	stages {
 		stage ("pull code from git repo"){
 		
