@@ -17,7 +17,7 @@ pipeline {
 		}
 		stage ("Building docker image"){
 			steps{
-				sh 'sudo docker build -t jo:$BUILD_TAG .'
+				sh 'sudo docker build -t jo .'
 		
 	         	}
          	}
