@@ -8,14 +8,14 @@ pipeline {
                         }
                  stage ("build the code") {
                           steps{
-                               bat 'mvn dependency:purge-local-repository'   
-                               bat 'mvn clean package'
+                               sh 'mvn dependency:purge-local-repository'   
+                               sh 'mvn clean package'
                           }
                  }
 
                  stage ("building docker image") {
                           steps {
-                                bat 'sudo  docker build -t java-app:$BUILD_TAG .'
+                                sh 'sudo  docker build -t java-app:$BUILD_TAG .'
                           }
                  }
         }  
