@@ -1,11 +1,14 @@
 pipeline {
-        agent jenkins-salve
+        agent {
+        label 'jenkins-salve'
+        }
         stages {
                  stage ("pull code from git repo") {
                           steps {
                                 git branch: 'main', url: 'https://github.com/sanjayjangir1093/java-app.git'
                                 }
                         }
+
                  stage ("build the code") {
                           steps{
                                sh 'mvn dependency:purge-local-repository'   
@@ -15,7 +18,7 @@ pipeline {
 
                  stage ("building docker image") {
                           steps {
-                                sh 'sudo  docker build -t java-app:$BUILD_TAG .'
+                                sh 'docker build -t java-app:$BUILD_TAG .'
                           }
                  }
         }  
