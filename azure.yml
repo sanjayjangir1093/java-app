@@ -1,0 +1,67 @@
+# azure-pipelines.yml
+
+trigger:
+  branches:
+    include:
+      - main  # Change this to your default branch
+
+pool:
+  vmImage: 'ubuntu-latest'  # Use an appropriate image for your build
+
+jobs:
+- job: BuildFlutter
+  displayName: 'Build Flutter App'
+  steps:
+  - task: FlutterInstall@0
+    inputs:
+      channel: 'stable'  # Use the stable channel for Flutter
+
+  - script: |
+      cd flutter_app  # Change to your Flutter app directory
+      flutter pub get
+      flutter build web  # Build for web; change if targeting mobile
+    displayName: 'Build Flutter App'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: 'flutter_app/build/web'  # Path to the build output
+      ArtifactName: 'FlutterWebApp'
+      publishLocation: 'Container'
+
+- job: BuildPHP
+  displayName: 'Build PHP Backend'
+  dependsOn: BuildFlutter
+  steps:
+  - script: |
+      cd php_backend  # Change to your PHP backend directory
+      composer install  # Install PHP dependencies
+    displayName: 'Install PHP Dependencies'
+
+  - script: |
+      # Run any tests or additional build steps here
+      echo "PHP build steps can be added here."
+    displayName: 'Build PHP Backend'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: 'php_backend'  # Path to your PHP backend
+      ArtifactName: 'PHPBackend'
+      publishLocation: 'Container'
+
+- job: Deploy
+  displayName: 'Deploy to Server'
+  dependsOn: 
+    - BuildFlutter
+    - BuildPHP
+  steps:
+  - download: current
+    artifact: FlutterWebApp
+
+  - download: current
+    artifact: PHPBackend
+
+  - script: |
+      # Assuming you have SSH access to your server
+      scp -r $(Pipeline.Workspace)/FlutterWebApp/* user@yourserver:/var/www/html/flutter_app  # Adjust the path
+      scp -r $(Pipeline.Workspace)/PHPBackend/* user@yourserver:/var/www/html/php_backend  # Adjust the path
+    displayName: 'Deploy to Server'
